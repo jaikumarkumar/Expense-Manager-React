@@ -1,11 +1,18 @@
+import "./index.css";
+import { useContext } from 'react'
+import { AuthContext } from "./context/Authcontext";
+import LoginRegister from "./components/Login";
+import Dashborad from "./components/Dashboard";
 
 function App() {
-
+  const { user } = useContext(AuthContext)
   return (
     <>
-    <h1>Hello world</h1>
+    {
+      (user) ? <Dashborad /> : <LoginRegister />
+    }
     </>
-  )
+  );
 }
 
-export default App
+export default App;
