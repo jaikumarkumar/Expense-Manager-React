@@ -1,34 +1,38 @@
-import { FirebaseAuth } from './firebase';
+import { FirebaseAuth } from "./firebase";
 import {
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-  } from "firebase/auth";
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
-
-  class FirebaseTransaction{
-
-    async signInWithCredentials({ email, password }){
-        try {
-            const resp = await createUserWithEmailAndPassword(FirebaseAuth, email, password);
-            return resp.user.uid
-    
-        } catch (error) {
-            return error.message;
-        }
-    }
-
-    async loginWithCredentials({ email, password }){
-        try{
-            return await signInWithEmailAndPassword(FirebaseAuth, email, password);
-        }
-        catch(error){
-            return error.message;
-        }
+class FirebaseTransaction {
+  // Private method to handle Firebase operations
+  async _handleAuthOperation(authMethod, email, password) {
+    try {
+      const response = await authMethod(FirebaseAuth, email, password);
+      return {email:response.user.email,token:response.user.stsTokenManager.accessToken,refreshToken:response.user.stsTokenManager.refreshToken};
+    } catch (error) {
+      console.log("Authentication error:", error.message);
+      return error; // Return null or handle it accordingly
     }
   }
 
-  const firebaseActivity = new FirebaseTransaction()
+  async registerWithCredentials({ email, password }) {
+    return this._handleAuthOperation(
+      createUserWithEmailAndPassword,
+      email,
+      password
+    );
+  }
 
-export {
-    firebaseActivity
+  async loginWithCredentials({ email, password }) {
+    return this._handleAuthOperation(
+      signInWithEmailAndPassword,
+      email,
+      password
+    );
+  }
 }
+
+const firebaseActivity = new FirebaseTransaction();
+
+export { firebaseActivity };
