@@ -1,5 +1,57 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getExpenses,createExpense,editExpense,removeExpense } from './expenseThunks'
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchExpenses,addExpense,updateExpense,deleteExpense } from '../../services/expenseService';
+
+
+export const getExpenses = createAsyncThunk('api/getExpenses',async ()=>{
+  try {
+      const {data} = await fetchExpenses();
+      console.log("JSON Stringfy",JSON.stringify(data));
+      return data
+    } catch (err) {
+      console.error(err);
+    }
+  }
+)
+
+// Async thunk for creating an expense
+export const createExpense = createAsyncThunk(
+  "expenses/createExpense",
+  async (expense) => {
+    try {
+      const response = await addExpense(expense);
+      return response.data
+    } catch (err) {
+      console.error(err);
+    }
+  }
+);
+
+// Async thunk for update an expense
+export const editExpense = createAsyncThunk(
+  "expenses/editExpense",
+  async ({ id, expense }) => {
+    try {
+      const response = await updateExpense({ id, expense });
+      return response.data
+    } catch (err) {
+      console.error(err);
+    }
+  }
+);
+
+// Async thunk for update an expense
+export const removeExpense = createAsyncThunk(
+  "expenses/removeExpense",
+  async ({ id }) => {
+    try {
+      const response = await deleteExpense({ id });
+      return response.data
+    } catch (err) {
+      console.error(err);
+    }
+  }
+);
 
 // Slice 
 const expensesSlice = createSlice({
@@ -8,12 +60,19 @@ const expensesSlice = createSlice({
     expensesData: [],
     status: "idle", // can be 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
+    updateData:[],
+    updateStatus:'pending',
+    updateError:null,
+    updateState: false,
   },
   reducers: {
-    fetchExpenses:(state,action)=>{
-        console.log(action)
-    }
-},
+    changeStateTrue: (state) => {
+      state.updateState = true;
+    },
+    changeStateFalse: (state) => {
+      state.updateState = false;
+    },
+  },
   extraReducers: (builder) => {
 
     builder
@@ -70,24 +129,6 @@ const expensesSlice = createSlice({
   },
 });
 
-export const getExpensesData = (state) =>{ console.log("-------)))))))))))))))---------",state) 
-      return state }
-// export const getExpensesStatus = (state) => state.userExpenses.status;
-// export const getExpensesError = (state) => state.userExpenses.error;
+export const { changeStateTrue, changeStateFalse } = createSlice.actions;
 
-// export const postExpensesData = (state) => state.userExpenses.expenses;
-// export const postExpensesStatus = (state) => state.userExpenses.status;
-// export const postExpensesError = (state) => state.userExpenses.error;
-
-// export const putExpensesData = (state) => state.userExpenses.expenses;
-// export const putExpensesStatus = (state) => state.userExpenses.status;
-// export const putExpensesError = (state) => state.userExpenses.error;
-
-// export const deleteExpensesData = (state) => state.userExpenses.expenses;
-// export const deleteExpensesStatus = (state) => state.userExpenses.status;
-// export const deleteExpensesError = (state) => state.userExpenses.error;
-
-
-
-export const {fetchExpenses} = expensesSlice.actions;
 export default expensesSlice.reducer;

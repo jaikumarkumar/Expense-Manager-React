@@ -1,15 +1,27 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getExpenses } from '../features/expenses/expenseThunks'
-import { getExpensesData } from '../features/expenses/expensesSlice'
-
+import { Button } from "@material-tailwind/react";
 import '../styles/expenses.style.css'
 
 
-const ExpenseTable = () => {
-  const expensesData = useSelector(getExpensesData);
-  const dispatch = useDispatch();
-  useEffect(() => { dispatch(getExpenses());}, [dispatch]);
+const ExpenseTable = ({expenses}) => {
+  //   const expensesData = useSelector(getExpensesData);
+      
+  //   const dispatch = useDispatch(); 
+
+  //   useEffect(() => { dispatch(getExpenses());}, [dispatch]);
+
+  // const handleCreate = () => {
+  //   dispatch(createExpense({ month: 'October', amount: 100 }));
+  // };
+
+  // const handleUpdate = (id) => {
+  //   dispatch(editExpense({ id, updates: { amount: 200 } }));
+  // };
+
+  // const handleDelete = (id) => {
+  //   dispatch(removeExpense(id));
+  // };
+  // console.log("++++++++++++++++++++++++++++++++++++++",expenses[9]);
+  
   return (
     <div className="table-container">
       <table className="expense-table">
@@ -19,17 +31,31 @@ const ExpenseTable = () => {
             <th>Category</th>
             <th>Amount</th>
             <th>Date</th>
+            <th colSpan={2}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {expensesData.expenses.expenses.expensesData && expensesData.expenses.expenses.expensesData.length > 0 ? (
-            expensesData.expenses.expenses.expensesData.map((expense, index) => (
-              <tr key={index}>
-                <td>{expense.title}</td>
-                <td>{expense.category}</td>
-                <td>{expense.amount}</td>
-                <td>{expense.date}</td>
+          {expenses ? (
+            expenses.map((expenses, index) => (
+                <tr key={index}>
+                <td>{expenses.title}</td>
+                <td>{expenses.category}</td>
+                <td>{expenses.amount}</td>
+                <td>{expenses.date}</td>
+                <td>
+                <Button
+                // onClick={() => handleUpdate(expense._id)}
+                >Edit
+                </Button>
+                </td>
+                <td>
+                <Button 
+                // onClick={() => handleDelete(expense._id)}
+                >Delete
+                </Button>
+                </td>
               </tr>
+              
             ))
           ) : (
             <tr>

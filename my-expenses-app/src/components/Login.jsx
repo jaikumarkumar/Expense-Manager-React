@@ -6,8 +6,8 @@ import { AuthContext } from "../context/Authcontext";
 const LoginRegister = () => {
     const {login,register} = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("jaikumar.kumar@aspiresys.com");
+  const [password, setPassword] = useState("Welcome@123");
 
   const toggleForm = () => setIsLogin(!isLogin);
 
