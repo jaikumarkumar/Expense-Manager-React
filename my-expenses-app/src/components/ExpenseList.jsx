@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
 import { getExpenses } from '../features/expenses/expenseThunks'
 import { getExpensesData } from '../features/expenses/expensesSlice'
+
+import '../styles/expenses.style.css'
 
 
 const ExpenseTable = () => {

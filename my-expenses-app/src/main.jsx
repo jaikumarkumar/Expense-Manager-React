@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
 import { AuthProvider  } from './context/Authcontext.jsx';
 
@@ -12,7 +13,8 @@ import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider>
+    <ThemeProvider>  
+    <BrowserRouter>
       <AuthProvider>
         <Provider store={store}>
         <PersistGate persistor={persistor}>
@@ -20,6 +22,7 @@ createRoot(document.getElementById('root')).render(
         </PersistGate>
         </Provider>
       </AuthProvider>
+    </BrowserRouter>
     </ThemeProvider>
   </StrictMode>,
 )

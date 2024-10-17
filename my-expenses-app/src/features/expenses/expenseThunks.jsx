@@ -4,8 +4,9 @@ import { fetchExpenses,addExpense,updateExpense,deleteExpense } from '../../serv
 
 export const getExpenses = createAsyncThunk('api/getExpense',async ()=>{
   try {
-      const response = await fetchExpenses();
-      return response.data
+      const {data} = await fetchExpenses();
+      console.log("JSON Stringfy",JSON.stringify(data));
+      return data
     } catch (err) {
       console.error(err);
     }

@@ -1,0 +1,33 @@
+.table-container {
+  margin: 20px;
+  font-family: "Arial", sans-serif;
+}
+
+.expense-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f9f9f9;
+}
+
+.expense-table th,
+.expense-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.expense-table th {
+  background-color: #4caf50; /* Green background for header */
+  color: white; /* White text for header */
+}
+
+.expense-table tr:hover {
+  background-color: #f1f1f1; /* Light gray on hover */
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  background-color: #f9f9f9;
+}
