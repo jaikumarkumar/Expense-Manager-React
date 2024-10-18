@@ -2,26 +2,7 @@ import { Button } from "@material-tailwind/react";
 import '../styles/expenses.style.css'
 
 
-const ExpenseTable = ({expenses}) => {
-  //   const expensesData = useSelector(getExpensesData);
-      
-  //   const dispatch = useDispatch(); 
-
-  //   useEffect(() => { dispatch(getExpenses());}, [dispatch]);
-
-  // const handleCreate = () => {
-  //   dispatch(createExpense({ month: 'October', amount: 100 }));
-  // };
-
-  // const handleUpdate = (id) => {
-  //   dispatch(editExpense({ id, updates: { amount: 200 } }));
-  // };
-
-  // const handleDelete = (id) => {
-  //   dispatch(removeExpense(id));
-  // };
-  // console.log("++++++++++++++++++++++++++++++++++++++",expenses[9]);
-  
+const ExpenseTable = ({expensesData,onEdit,ondelete}) => {
   return (
     <div className="table-container">
       <table className="expense-table">
@@ -35,22 +16,22 @@ const ExpenseTable = ({expenses}) => {
           </tr>
         </thead>
         <tbody>
-          {expenses ? (
-            expenses.map((expenses, index) => (
+          {expensesData ? (
+            expensesData.map((expensesData, index) => (
                 <tr key={index}>
-                <td>{expenses.title}</td>
-                <td>{expenses.category}</td>
-                <td>{expenses.amount}</td>
-                <td>{expenses.date}</td>
+                <td>{expensesData.title}</td>
+                <td>{expensesData.category}</td>
+                <td>{expensesData.amount}</td>
+                <td>{expensesData.date}</td>
                 <td>
                 <Button
-                // onClick={() => handleUpdate(expense._id)}
+                onClick={() => onEdit(expensesData)}
                 >Edit
                 </Button>
                 </td>
                 <td>
                 <Button 
-                // onClick={() => handleDelete(expense._id)}
+                onClick={() => ondelete(expensesData._id)}
                 >Delete
                 </Button>
                 </td>

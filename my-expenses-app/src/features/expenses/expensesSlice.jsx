@@ -30,9 +30,10 @@ export const createExpense = createAsyncThunk(
 // Async thunk for update an expense
 export const editExpense = createAsyncThunk(
   "expenses/editExpense",
-  async ({ id, expense }) => {
+  async (data) => {
+    const {id,category,amount,title} = data;
     try {
-      const response = await updateExpense({ id, expense });
+      const response = await updateExpense(id,{category,amount,title});
       return response.data
     } catch (err) {
       console.error(err);
@@ -45,7 +46,7 @@ export const removeExpense = createAsyncThunk(
   "expenses/removeExpense",
   async ({ id }) => {
     try {
-      const response = await deleteExpense({ id });
+      const response = await deleteExpense(id);
       return response.data
     } catch (err) {
       console.error(err);
@@ -129,6 +130,6 @@ const expensesSlice = createSlice({
   },
 });
 
-export const { changeStateTrue, changeStateFalse } = createSlice.actions;
+export const { changeStateTrue, changeStateFalse } = expensesSlice.actions;
 
 export default expensesSlice.reducer;

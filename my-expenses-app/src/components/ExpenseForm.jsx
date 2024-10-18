@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { useDispatch } from 'react-redux';
-import { createExpense,editExpense,removeExpense,updateState } from '../features/expenses/expensesSlice';
+import { createExpense,editExpense,removeExpense } from '../features/expenses/expensesSlice';
 import { Input, Button, Typography } from "@material-tailwind/react";
+import ExpenseList from '../components/ExpenseList';
 
-const ExpenseForm = () => {
+const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}) => {
   
   const dispatch = useDispatch();
-
-  const [id, setId] = useState("");
+  const [_id, setId] = useState("");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [title, setTitle] = useState("");
 
   console.log("input data", title,category, amount)
 
-  const handleSubmit = (e) => {
+  const handleClick = (e) => {
     e.preventDefault();
     dispatch(createExpense({ title,category, amount }));
     setCategory("");
@@ -22,24 +22,26 @@ const ExpenseForm = () => {
     setTitle("");
   };
   
-  const editExpenses = (expensesValue)=>{
-    setId(expensesValue.id)
-    setCategory(expensesValue.value)
-    setTitle(expensesValue.value)
-    setAmount(expensesValue.value)
-  }
-
-  const updateForm = () => {
-    dispatch(editExpense({ category: category, title: title,amount:amount }));
+  const updateExpenses = ()=>{
+    console.log("11111111111111111111111111",_id,category,amount,title)
+    dispatch(editExpense({id:_id,category,amount,title}));
     dispatch(changeStateFalse());
     setId("");
     setCategory("");
     setAmount("");
     setTitle("");
+  }
+
+  const editExpensesForm = (expensesData) => {
+    setId(expensesData._id)
+    setCategory(expensesData.category)
+    setTitle(expensesData.title)
+    setAmount(expensesData.amount)
+    dispatch(changeStateTrue());
   };
 
-  const deleteEmployee = (id) => {
-    dispatch(removeExpense(id));
+  const deleteExpenses = (_id) => {
+    dispatch(removeExpense({id:_id}));
   };
 
   return (
@@ -47,7 +49,6 @@ const ExpenseForm = () => {
       <Typography variant="h5" className="mb-4 text-center">
         {"Add Expense"}
       </Typography>
-      <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <Input
           type="text"
@@ -79,16 +80,19 @@ const ExpenseForm = () => {
         />
       </div>
       {updateState ? (
-        <Button type="submit" className="w-full">
+        <Button onClick={(e) => { updateExpenses(e); }} className="w-full">
         Update Expense
       </Button>
       ):(
-        <Button type="submit" className="w-full">
+        <Button onClick={(e) => { handleClick(e); }} className="w-full">
         Add Expense
       </Button>
       )}
-      
-    </form>
+      <ExpenseList 
+                expensesData={expensesData} 
+                onEdit={editExpensesForm}
+                ondelete={deleteExpenses}
+            />
     </div>
   );
 };
