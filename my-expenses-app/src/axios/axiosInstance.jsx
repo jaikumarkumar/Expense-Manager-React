@@ -1,5 +1,5 @@
-import axios from 'axios';
-import {API_BASE_URL} from '../constants/constants';
+import axios from "axios";
+import { API_BASE_URL } from "../constants/constants";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL, // Replace with your API base URL
@@ -13,7 +13,8 @@ axiosInstance.interceptors.request.use(
 
     // ** If token is present add it to request's Authorization Header
     if (accessToken) {
-      if (config.headers) config.headers["Authorization"] = "Bearer " + accessToken;
+      if (config.headers)
+        config.headers["Authorization"] = "Bearer " + accessToken;
     }
     return config;
   },

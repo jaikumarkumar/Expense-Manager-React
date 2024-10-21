@@ -17,27 +17,43 @@ export const AuthProvider = ({children})=>{
     }
 
     const login = async ({email,password})=>{
-        // const response= await firebaseActivity.loginWithCredentials(userData);
-        // setUser(response.email);
-        // Send the ID token to your backend
-        const response = await fetch(API_BASE_URL +'/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({email,password}),
-            });
-    
+        try{
+            const response = await fetch(API_BASE_URL +'/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email,password}),
+                });
+            
             const data = await response.json();
+            if (!response.ok) {        
+                // const ErrorData = await response.json();
+                throw new Error(`Invalid login credentials : ${data.message}`); // Handle non-200 responses
+            }
+            
             if (data.Token){
                 setUser(email)                
                 localStorage.setItem("token", data.Token);
                 return setJwt(data.Token)
             }
-        console.log('JWT from backend:', jwt); // This is your custom JWT
+            else {
+                throw new Error("Login failed....");
+            }
+        }
+        catch(error){
+            console.error("Login error:", error.message);
+            throw new Error(error.message);
+        }
     }
-    const logout = ()=>{
-    }
+    const logout = () => {
+    console.log("logout clicked")
+    // Implement logout functionality
+    setUser(null);
+    setJwt(null);
+    localStorage.removeItem("token");
+
+  };
 
     return(
         <AuthContext.Provider

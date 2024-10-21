@@ -10,24 +10,37 @@ const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [title, setTitle] = useState("");
+  const [error, setError] = useState(null);
 
-  console.log("input data", title,category, amount)
-
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
-    dispatch(createExpense({ title,category, amount }));
-    setCategory("");
-    setAmount("");
-    setTitle("");
+    try{
+      if(!title || !category || !amount){
+        throw new Error("All fields are required.");
+      }
+      await dispatch(createExpense({ title,category, amount })).unwrap();
+      resetForm();
+    }
+    catch (err) {
+      setError(err.message);
+      console.error("Create Expense Error:", err);
+  }
+    
   };
   
-  const updateExpenses = ()=>{
-    dispatch(editExpense({id:_id,category,amount,title}));
-    dispatch(changeStateFalse());
-    setId("");
-    setCategory("");
-    setAmount("");
-    setTitle("");
+  const updateExpenses = async () =>{
+
+    try {
+      if (!_id || !title || !category || !amount) {
+          throw new Error("All fields are required.");
+      }
+      await dispatch(editExpense({ id: _id, category, amount, title })).unwrap();
+      dispatch(changeStateFalse());
+      resetForm();
+  } catch (err) {
+      setError(err.message);
+      console.error("Update Expense Error:", err);
+  }
   }
 
   const editExpensesForm = (expensesData) => {
@@ -38,16 +51,32 @@ const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}
     dispatch(changeStateTrue());
   };
 
-  const deleteExpenses = (_id) => {
-    dispatch(removeExpense({id:_id}));
+  const deleteExpenses = async (_id) => {
+      try {
+        await dispatch(removeExpense({ id: _id })).unwrap();
+    } catch (err) {
+        console.error("Delete Expense Error:", err);
+        setError("Failed to delete the expense.");
+    }
   };
+
+  const resetForm = () => {
+    setId("");
+    setCategory("");
+    setAmount("");
+    setTitle("");
+    setError(null); // Reset error state
+};
 
   return (
     <>
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto mt-10">
       <Typography variant="h5" className="mb-4 text-center">
-        {"Add Expense"}
+        {updateState ? "Update Expense" : "Add Expense"}
       </Typography>
+      {error && <Typography className="text-red-500 text-center mb-4">{error}</Typography>}
+      
+      <form>
       <div>
         <Input
           type="text"
@@ -78,16 +107,10 @@ const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}
           label="Amount"
         />
       </div>
-      {updateState ? (
-        <Button onClick={(e) => { updateExpenses(e); }} className="w-full">
-        Update Expense
-      </Button>
-      ):(
-        <Button onClick={(e) => { handleClick(e); }} className="w-full">
-        Add Expense
-      </Button>
-      )}
-      
+      <Button onClick={(e) => updateState ? updateExpenses(e) : handleClick(e)} className="w-full">
+                        {updateState ? "Update Expense" : "Add Expense"}
+                    </Button>
+      </form>
     </div>
     <ExpenseList 
                 expensesData={expensesData} 

@@ -1,28 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchExpenses,addExpense,updateExpense,deleteExpense } from '../../services/expenseService';
+import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  fetchExpenses,
+  addExpense,
+  updateExpense,
+  deleteExpense,
+} from "../../services/expenseService";
 
-
-export const getExpenses = createAsyncThunk('api/getExpenses',async ()=>{
+export const getExpenses = createAsyncThunk("api/getExpenses", async () => {
   try {
-      const {data} = await fetchExpenses();
-      console.log("JSON Stringfy",JSON.stringify(data));
-      return data
-    } catch (err) {
-      console.error(err);
-    }
+    const data = await fetchExpenses();
+    console.log("Fetched Expenses:", JSON.stringify(data));
+    return data;
+  } catch (err) {
+    console.error("Error fetching expenses:", err);
+    throw new Error(err.message); 
   }
-)
+});
 
 // Async thunk for creating an expense
 export const createExpense = createAsyncThunk(
   "expenses/createExpense",
   async (expense) => {
     try {
-      const response = await addExpense(expense);
-      return response.data
+      const data = await addExpense(expense);
+      return data;
     } catch (err) {
-      console.error(err);
+      console.error("Error creating expense:", err);
+      throw new Error(err.message); // Propagate the error
     }
   }
 );
@@ -31,12 +35,13 @@ export const createExpense = createAsyncThunk(
 export const editExpense = createAsyncThunk(
   "expenses/editExpense",
   async (data) => {
-    const {id,category,amount,title} = data;
+    const { id, category, amount, title } = data;
     try {
-      const response = await updateExpense(id,{category,amount,title});
-      return response.data
+      const data = await updateExpense(id, { category, amount, title });
+      return data;
     } catch (err) {
-      console.error(err);
+      console.error("Error editing expense:", err);
+      throw new Error(err.message); // Propagate the error
     }
   }
 );
@@ -46,28 +51,27 @@ export const removeExpense = createAsyncThunk(
   "expenses/removeExpense",
   async ({ id }) => {
     try {
-      const response = await deleteExpense(id);
-      if(response)
-      {
+      const data = await deleteExpense(id);
+      if (data) {
         return id;
       }
-      
     } catch (err) {
-      console.error(err);
+      console.error("Error removing expense:", err);
+      throw new Error(err.message); // Propagate the error
     }
   }
 );
 
-// Slice 
+// Slice
 const expensesSlice = createSlice({
   name: "expenses",
-  initialState:{
+  initialState: {
     expensesData: [],
     status: "idle", // can be 'idle' | 'loading' | 'succeeded' | 'failed'
     error: null,
-    updateData:[],
-    updateStatus:'pending',
-    updateError:null,
+    updateData: [],
+    updateStatus: "pending",
+    updateError: null,
     updateState: false,
   },
   reducers: {
@@ -79,19 +83,18 @@ const expensesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-
     builder
-        .addCase(getExpenses.pending, (state) => {
-            state.status = 'pending';
-        })
-        .addCase(getExpenses.fulfilled,(state,action) =>{
-            state.status = 'succeeded';
-            state.expensesData = action.payload;
-        })
-        .addCase(getExpenses.rejected,(state,action) =>{
-            state.status = 'failed';
-            state.error = action.error.message;
-        })
+      .addCase(getExpenses.pending, (state) => {
+        state.status = "pending";
+      })
+      .addCase(getExpenses.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.expensesData = action.payload;
+      })
+      .addCase(getExpenses.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
 
     builder
       .addCase(createExpense.pending, (state) => {
@@ -112,14 +115,17 @@ const expensesSlice = createSlice({
       })
       .addCase(editExpense.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.expensesData.push(action.payload);
+        const index = state.expensesData.findIndex(exp => exp._id === action.payload._id);
+        if (index >= 0) {
+          state.expensesData[index] = action.payload; // Update existing expense
+        }
       })
       .addCase(editExpense.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
 
-      builder
+    builder
       .addCase(removeExpense.pending, (state) => {
         state.status = "loading";
       })

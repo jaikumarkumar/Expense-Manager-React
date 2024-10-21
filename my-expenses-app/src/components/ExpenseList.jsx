@@ -1,8 +1,7 @@
 import { Button } from "@material-tailwind/react";
-import '../styles/expenses.style.css'
+import "../styles/expenses.style.css";
 
-
-const ExpenseTable = ({expensesData,onEdit,ondelete}) => {
+const ExpenseTable = ({ expensesData, onEdit, ondelete }) => {
   return (
     <div className="table-container">
       <table className="expense-table">
@@ -18,25 +17,20 @@ const ExpenseTable = ({expensesData,onEdit,ondelete}) => {
         <tbody>
           {expensesData ? (
             expensesData.map((expensesData, index) => (
-                <tr key={index}>
+              <tr key={index}>
                 <td>{expensesData.title}</td>
                 <td>{expensesData.category}</td>
                 <td>{expensesData.amount}</td>
                 <td>{expensesData.date}</td>
                 <td>
-                <Button
-                onClick={() => onEdit(expensesData)}
-                >Edit
-                </Button>
+                  <Button onClick={() => onEdit(expensesData)}>Edit</Button>
                 </td>
                 <td>
-                <Button 
-                onClick={() => ondelete(expensesData._id)}
-                >Delete
-                </Button>
+                  <Button onClick={() => ondelete(expensesData._id)}>
+                    Delete
+                  </Button>
                 </td>
               </tr>
-              
             ))
           ) : (
             <tr>

@@ -1,25 +1,31 @@
-import { PieChart, Pie, Tooltip, Cell,BarChart, Bar, XAxis, YAxis,  CartesianGrid } from 'recharts';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { getExpenses } from '../features/expenses/expensesSlice';
+import {
+  PieChart,
+  Pie,
+  Tooltip,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
+import { useSelector,useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getExpenses } from "../features/expenses/expensesSlice";
 
 const ExpensesChart = ({ expenses }) => {
   return (
-      <BarChart width={600} height={300} data={expenses}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="category" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="amount" fill="#8884d8" />
-      </BarChart>
+    <BarChart width={600} height={300} data={expenses}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="category" />
+      <YAxis />
+      <Tooltip />
+      <Bar dataKey="amount" fill="#8884d8" />
+    </BarChart>
   );
 };
 
-const ExpensesPieChart = ({expenses,colors}) => {
-
-
-
+const ExpensesPieChart = ({ expenses, colors }) => {
   return (
     <PieChart width={400} height={400}>
       <Pie
@@ -42,26 +48,30 @@ const ExpensesPieChart = ({expenses,colors}) => {
 };
 
 const Dashboard = () => {
-  const {expensesData} = useSelector((state)=> state.expensesReducer);
-  const dispatch= useDispatch();
+  const {expensesData, error} = useSelector((state)=> state.expensesReducer);
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getExpenses());
   }, [dispatch]);
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
-    return(
-      <>
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+  return (
+    <>
       <h1>Dashboard</h1>
+      {error && <p className="text-red-500">Error: {error}</p>} {/* Display error message */}
+      
       <div className="flex">
-      <h1>Monthly Expenses</h1>
-      <ExpensesChart expenses={expensesData}/>
-      <h1>Monthly Expenses</h1>
-      <ExpensesPieChart  expenses={expensesData} colors={COLORS}/>
+      <div>
+          <h2>Monthly Expenses (Bar Chart)</h2>
+          <ExpensesChart expenses={expensesData} />
+        </div>
+        <div>
+          <h2>Monthly Expenses (Pie Chart)</h2>
+          <ExpensesPieChart expenses={expensesData} colors={COLORS} />
+        </div>
       </div>
-      </>
-    )
-  };
+    </>
+  );
+};
 
-  
-  
-  export default Dashboard;
+export default Dashboard;

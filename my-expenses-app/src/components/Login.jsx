@@ -1,22 +1,35 @@
 import { Input, Button } from "@material-tailwind/react";
 import { useState, useContext } from "react";
-
 import { AuthContext } from "../context/Authcontext";
 
 const LoginRegister = () => {
-    const {login,register} = useContext(AuthContext);
+  const { login, register } = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("jaikumar.kumar@aspiresys.com");
-  const [password, setPassword] = useState("Welcome@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null); // State for handling errors
 
-  const toggleForm = () => setIsLogin(!isLogin);
 
-  const handleSubmit = (e) => {
+  const toggleForm = () =>{
+    setError(null);
+    setIsLogin(!isLogin);
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    (isLogin) ? login({email,password}):register({email,password})
-    console.log(isLogin ? "Logging in..." : "Registering...");
-    
+    setError(null);
+    try{
+      if (isLogin) {
+        await login({ email, password });
+        console.log("Logging in...");
+    } else {
+        await register({ email, password });
+        console.log("Registering...");
+    }
+    }catch (err) {
+      setError(err.message || "An error occurred. Please try again.");
+      console.error("Authentication error:", err);
+  }
   };
 
   return (
@@ -25,6 +38,7 @@ const LoginRegister = () => {
         <h2 className="text-2xl font-bold text-center mb-6">
           {isLogin ? "Login" : "Register"}
         </h2>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}        
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <Input
             type="email"

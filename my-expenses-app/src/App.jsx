@@ -1,20 +1,14 @@
 import "./index.css";
-import { useContext,useState,useEffect } from 'react'
-import { AuthContext } from "./context/Authcontext";
 import LoginRegister from "./components/Login";
 import Dashborad from "./components/Dashboard";
+import { AuthContext } from "./context/Authcontext";
+import { useContext } from "react";
 
 function App() {
   const { user } = useContext(AuthContext);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
-  return (
-    <>
-    {
-      (token) ? <Dashborad /> : <LoginRegister />
-    }
-    </>
-  );
+  return <>{token && user ? <Dashborad /> : <LoginRegister />}</>;
 }
 
 export default App;
