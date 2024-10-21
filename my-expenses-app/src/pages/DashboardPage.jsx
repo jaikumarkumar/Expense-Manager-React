@@ -1,10 +1,14 @@
 import { PieChart, Pie, Tooltip, Cell,BarChart, Bar, XAxis, YAxis,  CartesianGrid } from 'recharts';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getExpenses } from '../features/expenses/expensesSlice';
 
 const ExpensesChart = ({ expenses }) => {
   return (
       <BarChart width={600} height={300} data={expenses}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
+          <XAxis dataKey="category" />
           <YAxis />
           <Tooltip />
           <Bar dataKey="amount" fill="#8884d8" />
@@ -13,12 +17,15 @@ const ExpensesChart = ({ expenses }) => {
 };
 
 const ExpensesPieChart = ({expenses,colors}) => {
+
+
+
   return (
     <PieChart width={400} height={400}>
       <Pie
         data={expenses}
         dataKey="amount"
-        nameKey="month"
+        nameKey="category"
         cx="50%"
         cy="50%"
         outerRadius={80}
@@ -35,11 +42,11 @@ const ExpensesPieChart = ({expenses,colors}) => {
 };
 
 const Dashboard = () => {
-  const expenses = [
-    { month: 'January', amount: 500 },
-    { month: 'February', amount: 300 },
-    { month: 'March', amount: 450 },
-];
+  const {expensesData} = useSelector((state)=> state.expensesReducer);
+  const dispatch= useDispatch();
+  useEffect(() => {
+    dispatch(getExpenses());
+  }, [dispatch]);
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
     return(
@@ -47,9 +54,9 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
       <h1>Dashboard</h1>
       <div className="flex">
       <h1>Monthly Expenses</h1>
-      <ExpensesChart expenses={expenses}/>
+      <ExpensesChart expenses={expensesData}/>
       <h1>Monthly Expenses</h1>
-      <ExpensesPieChart  expenses={expenses} colors={COLORS}/>
+      <ExpensesPieChart  expenses={expensesData} colors={COLORS}/>
       </div>
       </>
     )

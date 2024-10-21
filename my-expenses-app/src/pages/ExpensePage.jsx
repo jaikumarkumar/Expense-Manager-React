@@ -8,11 +8,13 @@ import { getExpenses,
 const ExpensePage = () => {
     
     const dispatch = useDispatch();
-    const {expensesData,updateState} = useSelector((state) => state.expensesReducer);
-
+    
     useEffect(() => {
         dispatch(getExpenses());
       }, [dispatch]);
+    const {expensesData,updateState} = useSelector((state) => state.expensesReducer);
+
+
 
     return (
         <div className="p-4">

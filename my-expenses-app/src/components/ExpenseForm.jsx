@@ -5,7 +5,6 @@ import { Input, Button, Typography } from "@material-tailwind/react";
 import ExpenseList from '../components/ExpenseList';
 
 const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}) => {
-  
   const dispatch = useDispatch();
   const [_id, setId] = useState("");
   const [category, setCategory] = useState("");
@@ -23,7 +22,6 @@ const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}
   };
   
   const updateExpenses = ()=>{
-    console.log("11111111111111111111111111",_id,category,amount,title)
     dispatch(editExpense({id:_id,category,amount,title}));
     dispatch(changeStateFalse());
     setId("");
@@ -45,6 +43,7 @@ const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}
   };
 
   return (
+    <>
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto mt-10">
       <Typography variant="h5" className="mb-4 text-center">
         {"Add Expense"}
@@ -88,12 +87,14 @@ const ExpenseForm = ({expensesData,updateState,changeStateTrue,changeStateFalse}
         Add Expense
       </Button>
       )}
-      <ExpenseList 
+      
+    </div>
+    <ExpenseList 
                 expensesData={expensesData} 
                 onEdit={editExpensesForm}
                 ondelete={deleteExpenses}
             />
-    </div>
+    </>
   );
 };
 

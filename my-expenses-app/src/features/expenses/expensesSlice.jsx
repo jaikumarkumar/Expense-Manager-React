@@ -47,7 +47,11 @@ export const removeExpense = createAsyncThunk(
   async ({ id }) => {
     try {
       const response = await deleteExpense(id);
-      return response.data
+      if(response)
+      {
+        return id;
+      }
+      
     } catch (err) {
       console.error(err);
     }
@@ -121,7 +125,9 @@ const expensesSlice = createSlice({
       })
       .addCase(removeExpense.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.expensesData.push(action.payload);
+        state.expensesData = state.expensesData.filter(
+          (expensesData) => expensesData._id !== action.payload
+        );
       })
       .addCase(removeExpense.rejected, (state, action) => {
         state.status = "failed";
